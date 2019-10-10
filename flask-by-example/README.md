@@ -1,7 +1,7 @@
 ## Flask By Example
 ### Full-stack tutorial
 
-- Part One: Set up a local development environment and then deploy both a staging and a production environment on Heroku. (current)
+- Part One: Set up a local development environment and then deploy both a staging and a production environment on Heroku.
 - Part Two: Set up a PostgreSQL database along with SQLAlchemy and Alembic to handle migrations.
 - Part Three: Add in the back-end logic to scrape and then process the word counts from a webpage using the requests, BeautifulSoup, and Natural Language Toolkit (NLTK) libraries.
 - Part Four: Implement a Redis task queue to handle the text processing.
