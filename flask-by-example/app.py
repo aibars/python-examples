@@ -3,6 +3,7 @@ import requests
 import operator
 import re
 import nltk
+import json
 from flask import Flask, render_template, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from stop_words import stops
@@ -22,23 +23,23 @@ from models import *
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    results = {}
-    if request.method == "POST":
-        # get url that the person has entered
-        url = request.form['url']
-        if 'http://' not in url[:7]:
-            url = 'http://' + url
-        job = q.enqueue_call(
-            func=count_and_save_words, args=(url,), result_ttl=5000
-        )
-        print(job.get_id())
+    return render_template('index.html')
 
-    return render_template('index.html', results=results)
-
+@app.route('/start', methods=['POST'])
+def get_counts():
+    data = json.loads(request.data.decode())
+    url = data['url']
+    if 'http://' not in url[:7]:
+        url = 'http://' + url
+    job = q.enqueue_call(
+        func=count_and_save_words, args=(url,), result_ttl=5000
+    )
+    return job.get_id()
 
 def count_and_save_words(url):
     errors = []
     try:
+        print(url)
         r = requests.get(url)
     except Exception as e:
         errors.append("Unable to get URL. Please make sure it's valid and try again.")
