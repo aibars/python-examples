@@ -29,7 +29,9 @@ def index():
 def get_counts():
     data = json.loads(request.data.decode())
     url = data['url']
-    if 'http://' not in url[:7]:
+    if 'https://' in url[:8]:
+        url = 'http://' + url[8:]
+    elif 'http://' not in url[:7]:
         url = 'http://' + url
     job = q.enqueue_call(
         func=count_and_save_words, args=(url,), result_ttl=5000
