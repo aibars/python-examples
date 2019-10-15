@@ -2,7 +2,6 @@
     'use strict';
 
     angular.module('WordcountApp', [])
-
         .controller('WordcountController', ['$scope', '$log', '$http', '$timeout',
             function ($scope, $log, $http, $timeout) {
                 $scope.submitButtonText = 'Submit';
@@ -50,14 +49,41 @@
                                 // until the timeout is cancelled
                                 timeout = $timeout(poller, 2000);
                             }).
-                            error(function(error) {
+                            error(function (error) {
                                 $log.log(error);
                                 $scope.loading = false;
                                 $scope.submitButtonText = "Submit";
                                 $scope.urlerror = true;
-                              })};
+                            })
+                    };
                     poller();
                 };
             }
-        ]);
+        ])
+        .directive('wordCountChart', ['$parse', function ($parse) {
+            return {
+                restrict: 'E',
+                replace: true,
+                template: '<div id="chart"></div>',
+                link: function (scope) {
+                    scope.$watch('wordcounts', function () {
+                        var data = scope.wordcounts;
+                        for (var word in data) {
+                            d3.select('#chart')
+                                .append('div')
+                                .selectAll('div')
+                                .data(word[0])
+                                .enter()
+                                .append('div')
+                                .style('width', function () {
+                                    return (data[word] * 20) + 'px';
+                                })
+                                .text(function (d) {
+                                    return word;
+                                });
+                        }
+                    }, true);
+                }
+            };
+        }]);
 }());

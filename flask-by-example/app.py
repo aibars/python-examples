@@ -40,28 +40,28 @@ def get_counts():
 
 def count_and_save_words(url):
     errors = []
+
     try:
-        print(url)
         r = requests.get(url)
     except Exception as e:
         errors.append("Unable to get URL. Please make sure it's valid and try again.")
         errors.append(str(e))
         return {'error': errors}
-    raw = BeautifulSoup(r.text).get_text()
+    raw = BeautifulSoup(r.text, 'html.parser').get_text()
     nltk.data.path.append('./nltk_data/')
     tokens = nltk.word_tokenize(raw)
     text = nltk.Text(tokens)
 
     nonPunct = re.compile('.*[A-Za-z].*')
     raw_words = [w for w in text if nonPunct.match(w)]
-    raw_words_count = Counter(raw_words)
+    raw_word_count = Counter(raw_words)
 
     no_stop_words = [w for w in raw_words if w.lower() not in stops]
     no_stop_words_count = Counter(no_stop_words)
     try:
         result = Result(
             url=url,
-            result_all=raw_words_count,
+            result_all=raw_word_count,
             result_no_stop_words=no_stop_words_count
         )
         db.session.add(result)
@@ -81,7 +81,7 @@ def get_results(job_key):
             key=operator.itemgetter(1),
             reverse=True
         )[:10]
-        return jsonify(results)
+        return jsonify(dict(results))
     else:
         return "Nay!", 202
 
