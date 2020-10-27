@@ -22,7 +22,7 @@ chardet==3.0.4
 chrome-gnome-shell==0.0.0
 Click==7.0
 colorama==0.4.1
-cryptography==2.7
+cryptography==3.2
 Cython==0.29.13
 decorator==4.4.0
 distlib==0.2.9
